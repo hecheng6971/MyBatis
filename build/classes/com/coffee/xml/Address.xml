@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/">
+	<!-- 事务 -->
+	<insert id="insertAddress" parameterType="Address"
+		statementType="PREPARED">
+		insert into tbl_address(user_id,city,country)
+		values(#{user.id},#{city},#{country})
+	</insert>
+	<!-- 普通连接 -->
+	<resultMap id="UAMap" type="Address">
+		<id property="id" column="id" />
+		<result property="city" column="city" />
+		<result property="country" column="country" />
+		<result property="money" column="money" />
+		<association property="user" column="user_id" javaType="User">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="password" column="password" />
+			<result property="email" column="email" />
+		</association>
+	</resultMap>
+	<select id="selectAddressJoin" resultMap="UAMap">
+		select * from
+		tbl_address inner join tbl_user
+		on tbl_user.id=tbl_address.user_id
+
+	</select>
+
+
+	<!-- 多构造函数选择 -->
+	<resultMap id="UAMapByConstrator" type="Address">
+		<id property="id" column="id" />
+		<result property="city" column="city" />
+		<result property="country" column="country" />
+		<result property="money" column="money" />
+		<association property="user" column="user_id" javaType="User">
+			<constructor>
+				<arg column="name" javaType="String" />
+				<arg column="password" javaType="String" />
+			</constructor>
+		</association>
+	</resultMap>
+	<select id="selectAddressJoinCon" resultMap="UAMapByConstrator">
+		select * from
+		tbl_address inner join tbl_user
+		on tbl_user.id=tbl_address.user_id;
+	</select>
+
+	<!-- 调用其他函数 -->
+	<resultMap id="UAMapBySubMap" type="Address">
+		<id property="id" column="id" />
+		<result property="city" column="city" />
+		<result property="country" column="country" />
+		<result property="money" column="money" />
+		<association property="user" column="user_id" javaType="User"
+			select="findById">
+		</association>
+	</resultMap>
+	<select id="selectAddress" resultMap="UAMapBySubMap">
+		select * from tbl_address;
+	</select>
+
+	<!-- 连接二次筛选 -->
+	<resultMap id="UAMap1" type="Address">
+		<id property="id" column="id" />
+		<result property="city" column="city" />
+		<result property="country" column="country" />
+		<result property="money" column="money" />
+		<association property="user" column="user_id" javaType="User">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="password" column="password" />
+			<result property="email" column="email" />
+		</association>
+	</resultMap>
+	<select id="selectAddressJoinIF" resultMap="UAMap1"
+		parameterType="Address">
+		select * from
+		tbl_address inner join tbl_user
+		on
+		tbl_user.id=tbl_address.user_id
+		where 1=1
+		<if test="money!=null">
+			and money>#{money}
+		</if>
+	</select>
+
+
+</mapper>
