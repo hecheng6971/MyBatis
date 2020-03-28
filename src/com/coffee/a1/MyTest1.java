@@ -2,15 +2,20 @@ package com.coffee.a1;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.text.AbstractDocument.LeafElement;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import com.coffee.entity.LeaveEvent;
 import com.coffee.entity.Student;
 
 public class MyTest1 {
@@ -73,7 +78,52 @@ public class MyTest1 {
 			{
 				System.out.println(s.id + "\t, " + s.name);
 			}
-
+			
+			///插入操作
+//			Student stu = new Student();
+//			stu.id = 20200255;
+//			stu.name = "刘德华";
+//			stu.sex = true;
+//			stu.phone = "1381000000";
+//			stu.birthday=new SimpleDateFormat("yyyy-MM-dd").parse("2020-08-09");
+//			session.insert("com.coffee.test.insertStudent", stu);
+//			session.commit(); // 因为默认开启了事务，所以要commit()一下
+			
+			///插入map操作
+//			HashMap<String,Object> map2 = new HashMap<String, Object>();
+//			map2.put("id", 20190202);
+//			map2.put("name", "杨玉环");
+//			map2.put("sex", false);
+//			map2.put("phone", "13600000001");
+//			session.insert("com.coffee.test.insertStudent2", map2);
+//			session.commit(); // 因为默认开启了事务，所以要commit()一下
+			
+			//自增主键调用
+			LeaveEvent leaveEvent = new LeaveEvent();
+			leaveEvent.setStuId(20200001);
+			leaveEvent.setDaysFrom(new Date(2000-1900,8-1,21));
+			leaveEvent.setDaysTo(new Date(2020-1900,9-1,11));
+			leaveEvent.setType((byte) 1);
+			leaveEvent.setReason("测试");
+			session.insert("com.coffee.test.insertLeaveEvent", leaveEvent);
+			System.out.println("新记录的ID： " + leaveEvent.getId());
+			session.commit(); // 因为默认开启了事务，所以要commit()一下
+			
+			//update
+			HashMap<String,Object> map3 = new HashMap<String, Object>();
+			map3.put("id", 20200001);
+			map3.put("phone", "13810011118");
+			map3.put("birthday", "2011-05-05");
+			int affectedRows = session.update("com.coffee.test.updateStudent", map3);
+			System.out.println("受影响的行数: " + affectedRows);
+			session.commit(); // 因为默认开启了事务，所以要commit()一下
+			
+			//delete
+			HashMap<String,Object> map4 = new HashMap<String, Object>();
+			map4.put("id",22222222);
+			affectedRows = session.delete("com.coffee.test.deleteStudent", map4);
+			System.out.println("受影响的行数: " + affectedRows);
+			session.commit(); // 因为默认开启了事务，所以要commit()一下
 		} finally {
 			session.close();
 		}

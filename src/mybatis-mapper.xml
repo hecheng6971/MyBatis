@@ -29,4 +29,30 @@
     <select id="getStudent7" resultType="Student">
     SELECT * FROM student WHERE id &gt;= #{from} AND id&lt;= #{to}
       </select>
+      
+      <insert id="insertStudent" parameterType="Student">
+    insert into student(id,name,sex, phone,birthday)
+      values(#{id}, #{name}, #{sex}, #{phone}, #{birthday} )
+  </insert >
+  
+   <insert id="insertStudent2" parameterType="hashmap">
+    insert into student(id,name,sex, phone)
+      values(#{id}, #{name}, #{sex}, #{phone} )
+  </insert >
+  
+   <insert id="insertLeaveEvent" parameterType="LeaveEvent"
+  		useGeneratedKeys="true"  
+  		keyProperty="id" >	
+    insert into leave_event(stuId,daysFrom,daysTo,type,reason)
+      values( #{stuId}, #{daysFrom}, #{daysTo}, #{type}, #{reason} )
+  </insert >
+  
+   <update id="updateStudent" parameterType="hashmap">
+    update student set phone=#{phone},birthday=#{birthday}  where id=#{id}
+    
+  </update>
+  
+  <delete id="deleteStudent" parameterType="hashmap">
+    delete from student where id=#{id}    
+  </delete>
 </mapper>
